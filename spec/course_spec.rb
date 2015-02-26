@@ -64,40 +64,47 @@ require 'spec_helper'
       course = Course.new({:name => "Science for Everyday Life", :id => nil, :course_number => "SEL310"})
       course.save
       course.update({:name => "Life Science"})
-      expect(course.name).to eq("Life Science")
+      course.update({:course_number => "SEL100"})
+      expect(course.course_number).to eq ("SEL100")
+      expect(course.name).to eq ("Life Science")
     end
+   end
 
-    # it("allows you to change the course number") do
-    #   ...
-    #   course.update({:number => "SEL105"})
-    #   ...
-    # end
-  end
-
-  describe "#update_course_id" do
-    it "lets you add an course to a student" do
+  describe "#update_student_id" do
+    it "lets you add a student to a course" do
       course = Course.new({:name => "Advanced Spanish", :id => nil, :course_id => "AS498"})
       course.save
       samantha = Student.new({:name => "Samantha Parkington", :id => nil, :date_of_enrollment => "2015-01-01"})
       samantha.save
       casey = Student.new({:name => "Casey Aoki", :id => nil, :date_of_enrollment => "2014-04-15"})
       casey.save
-      student.update_course_ids({:course_ids => [samantha.id, casey.id]})
-      expect(student.courses).to eq ([samantha, casey])
+    course.update_student_ids({:student_ids => [samantha.id, casey.id]})
+      expect(course.students).to eq ([samantha, casey])
     end
   end
 
   describe "students" do
-    it "tells what students are in a course" do
-      course1 = Course.new({:name => "Legal Ethics", :id => nil, :course_number => "LE240"})
-      course1.save
-      course2 = Course.new({:name => "Advanced Spanish", :id => nil, :course_id => "AS498"})
-      course2.save
-      student =  Student.new({:name => "Samantha Parkington", :id => nil, :date_of_enrollment => "2015-01-01"})
+    it "tells what courses a student has taken" do
+      student = Student.new({:name => "Jasmine Thatcher", :id => nil, date_of_enrollment => "2015-01-25"})
       student.save
-      student.update_course_id({:course_ids => [course1.id]})
-      student.update_course_id({:course_ids => [course2.id]})
-      expect(student.courses).to eq ([course, course2])
+      student2 =  Student.new({:name => "Samantha Parkington", :id => nil, :date_of_enrollment => "2015-01-01"})
+      student2.save
+      course = Course.new({:name => "Legal Ethics", :id => nil, :course_number => "LE240"})
+      course.save
+      course.update_student_id({:student_ids => [student.id]})
+      course.update_student_id({:student_ids => [student2.id]})
+      expect(course.students).to eq ([student, student2])
+    end
+  end
+
+  describe "delete" do
+    it "allows deletion of a course from the database" do
+      course = Course.new({:name => "Russian History", :id => nil, :course_number => "RH387"})
+      course.save
+      course2 = Course.new({:name => "Political Science in France", :id => nil, :course_number => "PSF307"})
+      course2.save
+      course2.delete
+      expect(Course.all).to eq ([course])
     end
   end
 end

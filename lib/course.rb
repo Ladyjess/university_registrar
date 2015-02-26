@@ -4,7 +4,7 @@ class Course
   def initialize(properties)
     @name = properties[:name]  #properties the class (.fetch) "name"
     @id = properties[:id]
-    @course_numer = properties[:course_number]
+    @course_number = properties[:course_number]
   end
 
   def self.all
@@ -35,41 +35,35 @@ class Course
   self.name.==(another_course.name).&(self.id.==(another_course.id)).&(self.course_number.== (another_course.course_number))
   end
 
-  def update(new_name)
-    @name = new_name.fetch(:name, @name)  #second argument is for default value incase nothing is passed in. It wont raise errors
+  def update(new_info)
+    @name = new_info.fetch(:name, @name)  #second argument is for default value incase nothing is passed in. It wont raise errors
+    @course_number = new_info.fetch(:course_number, @course_number)
     DB.exec("UPDATE courses SET name = '#{@name}', course_number = '#{@course_number}' WHERE id = #{@id};")
   end
 
-
-  def update_course_id(properties)
-    @name = properties[:name, @name]
-    @course_number = properties[:course_number]
-    DB.exec("UPDATE courses SET name = '#{@name}' WHERE id = #{self.id};")
-    DB.exec("UPDATE courses SET course_number = '#{@course_number}' WHERE id = #{@id};")
-    properties.fetch(:student_ids, []).each do |student_id|
+  def update_student_id(add_student_to_course)
+    @name = add_student_to_course.fetch(:name, @name)
+    @course_number = add_student_to_course[:course_number]
+    DB.exec("UPDATE courses SET name = '#{@name}', course_number = '#{@course_number} WHERE id = #{self.id};")
+    add_student_to_course.fetch(:student_ids, []).each do |student_id|
       DB.exec("INSERT INTO courses_students (student_id, course_id) VALUES (#{self.id}, #{student_id});")
     end
   end
+
+  def students
+    courses_students = []
+    results = DB.exec("SELECT student_id FROM courses_student WHERE student_id = #{self.id()};")
+    results.each do |result|
+      student_id = result["student_id"].to_i
+      student = DB.exec("SELECT * FROM students WHERE id = #{student_id};")
+      name = student.first["name"]
+      courses_students << Student.new({:name => name, :id => student_id, :date_of_enrollment => date_of_enrollment})
+    end
+    courses_students
+  end
+
+  def delete
+    DB.exec("DELETE FROM courses_students WHERE course_id = #{self.id()};")
+    DB.exec("DELETE FROM courses WHERE id = #{self.id()};")
+  end
 end
-
-
-
-
-
-#
-# define_method(:movies) do
-#   actor_movies = []
-#   results = DB.exec("SELECT movie_id FROM actors_movies WHERE actor_id = #{self.id()};")
-#   results.each() do |result|
-#     movie_id = result.fetch("movie_id").to_i()
-#     movie = DB.exec("SELECT * FROM movies WHERE id = #{movie_id};")
-#     name = movie.first().fetch("name")
-#     actor_movies.push(Movie.new({:name => name, :id => movie_id}))
-#   end
-#   actor_movies
-# end
-#
-# define_method(:delete) do
-#   DB.exec("DELETE FROM actors_movies WHERE actor_id = #{self.id()};")
-#   DB.exec("DELETE FROM actors WHERE id = #{self.id()};")
-# end
