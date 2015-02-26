@@ -2,9 +2,10 @@ require 'rspec'
 require 'pg'
 require 'student'
 require 'course'
+require 'pry'
 
 
-DB = PG.connect({:dbname => "university_registrar"})
+DB = PG.connect({:dbname => "university_registrar_test"})
 
 
 RSpec.configure do |config|

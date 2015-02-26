@@ -51,11 +51,9 @@ require 'spec_helper'
 
   describe "#==" do
     it "is the same course if it has the same name, id, and course number" do
-      equal_course = Course.new({:name => "Legal Ethics", :id => nil, :course_number => "LE240"})
-      equal_course.save
-      equal_course2 = Course.new({:name => "Legal Ethics", :id => nil, :course_number => "LE240"})
-      equal_course2.save
-      expect(equal_course).to eq (equal_course2)
+      test_course = Course.new({:name => "Legal Ethics", :id => nil, :course_number => "LE240"})
+      test_course2 = Course.new({:name => "Legal Ethics", :id => nil, :course_number => "LE240"})
+      expect(test_course).to eq (test_course2)
     end
   end
 
@@ -70,9 +68,9 @@ require 'spec_helper'
     end
    end
 
-  describe "#update_student_id" do
+  describe "#update_student_ids" do
     it "lets you add a student to a course" do
-      course = Course.new({:name => "Advanced Spanish", :id => nil, :course_id => "AS498"})
+      course = Course.new({:name => "Advanced Spanish", :id => nil, :course_number => "AS498"})
       course.save
       samantha = Student.new({:name => "Samantha Parkington", :id => nil, :date_of_enrollment => "2015-01-01"})
       samantha.save
@@ -85,14 +83,14 @@ require 'spec_helper'
 
   describe "students" do
     it "tells what courses a student has taken" do
-      student = Student.new({:name => "Jasmine Thatcher", :id => nil, date_of_enrollment => "2015-01-25"})
+      student = Student.new({:name => "Jasmine Thatcher", :id => nil, :date_of_enrollment => "2015-01-25"})
       student.save
       student2 =  Student.new({:name => "Samantha Parkington", :id => nil, :date_of_enrollment => "2015-01-01"})
       student2.save
       course = Course.new({:name => "Legal Ethics", :id => nil, :course_number => "LE240"})
       course.save
-      course.update_student_id({:student_ids => [student.id]})
-      course.update_student_id({:student_ids => [student2.id]})
+      course.update_student_ids({:student_ids => [student.id]})
+      course.update_student_ids({:student_ids => [student2.id]})
       expect(course.students).to eq ([student, student2])
     end
   end

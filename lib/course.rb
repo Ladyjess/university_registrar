@@ -2,7 +2,7 @@ class Course
   attr_reader :name, :id, :course_number
 
   def initialize(properties)
-    @name = properties[:name]  #properties the class (.fetch) "name"
+    @name = properties[:name]  #fetch properties of this class contained in a hash
     @id = properties[:id]
     @course_number = properties[:course_number]
   end
@@ -13,6 +13,7 @@ class Course
     returned_courses.each do |course|
       name = course["name"]
       id = course["id"].to_i
+      course_number = course["course_number"]
       courses << Course.new({:name => name, :id => id, :course_number => course_number})
     end
    courses
@@ -41,20 +42,21 @@ class Course
     DB.exec("UPDATE courses SET name = '#{@name}', course_number = '#{@course_number}' WHERE id = #{@id};")
   end
 
-  def update_student_id(add_student_to_course)
+  def update_student_ids(add_student_to_course)
     @name = add_student_to_course.fetch(:name, @name)
     @course_number = add_student_to_course[:course_number]
-    DB.exec("UPDATE courses SET name = '#{@name}', course_number = '#{@course_number} WHERE id = #{self.id};")
+    DB.exec("UPDATE courses SET name = '#{@name}', course_number = '#{@course_number}' WHERE id = #{self.id};")
     add_student_to_course.fetch(:student_ids, []).each do |student_id|
-      DB.exec("INSERT INTO courses_students (student_id, course_id) VALUES (#{self.id}, #{student_id});")
+      DB.exec("INSERT INTO courses_students (course_id, student_id) VALUES (#{self.id}, #{student_id});")
     end
   end
 
   def students
     courses_students = []
-    results = DB.exec("SELECT student_id FROM courses_student WHERE student_id = #{self.id()};")
+    results = DB.exec("SELECT student_id FROM courses_students WHERE student_id = #{self.id};")
     results.each do |result|
       student_id = result["student_id"].to_i
+    binding.pry
       student = DB.exec("SELECT * FROM students WHERE id = #{student_id};")
       name = student.first["name"]
       courses_students << Student.new({:name => name, :id => student_id, :date_of_enrollment => date_of_enrollment})
@@ -63,7 +65,7 @@ class Course
   end
 
   def delete
-    DB.exec("DELETE FROM courses_students WHERE course_id = #{self.id()};")
-    DB.exec("DELETE FROM courses WHERE id = #{self.id()};")
+    DB.exec("DELETE FROM courses_students WHERE course_id = #{self.id};")
+    DB.exec("DELETE FROM courses WHERE id = #{self.id};")
   end
 end
