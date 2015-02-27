@@ -56,7 +56,6 @@ class Course
     results = DB.exec("SELECT student_id FROM courses_students WHERE student_id = #{self.id};")
     results.each do |result|
       student_id = result["student_id"].to_i
-    binding.pry
       student = DB.exec("SELECT * FROM students WHERE id = #{student_id};")
       name = student.first["name"]
       courses_students << Student.new({:name => name, :id => student_id, :date_of_enrollment => date_of_enrollment})

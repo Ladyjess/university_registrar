@@ -42,9 +42,6 @@ class Student
   end
 
   def update_course_ids(add_course_to_student)
-    @name = add_course_to_student.fetch(:name, @name)
-    @date_of_enrollment = add_course_to_student[:date_of_enrollment]
-    DB.exec("UPDATE students SET name = '#{@name}', date_of_enrollment = '#{@date_of_enrollment}' WHERE id = #{self.id};")
     add_course_to_student.fetch(:course_ids, []).each do |course_id|
       DB.exec("INSERT INTO courses_students (student_id, course_id) VALUES (#{self.id}, #{course_id});")
     end
@@ -57,7 +54,7 @@ class Student
       course_id = result["course_id"].to_i
       course = DB.exec("SELECT * FROM courses WHERE id = #{course_id};")
       name = course.first["name"]
-      awesome_courses << Course.new({:name => name, :id => id, :course_number => course_number})
+      awesome_courses << Course.new({:name => name, :id => course_id, :course_number => course_number})
     end
     awesome_courses
   end
