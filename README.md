@@ -32,3 +32,10 @@ Next will have to make our join table. This will provide the many-to-many relati
 courses and students. A student can have many courses.  A course can have many students.
 
 Step four: ```CREATE TABLE courses_students (id serial PRIMARY KEY, student_id int, course_id int);```
+
+
+##License
+
+GNU GPL v2.0
+
+Feel free to download, copy, and improve via fork and pull request.
