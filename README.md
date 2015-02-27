@@ -4,18 +4,17 @@
 
 You can add a course to a student and add a student to a course.
 
-Database will be a many to many relationship
 
 
-#Author
+##Author
 
 Jessica Hori
 
-#Install
+##Install
 
 Clone repository and run bundle in order to use required gem dependencies.
 
-#Database Setup
+##Database Setup
 
 This app uses Postgres, but you should be able to use it with all relational databases with the current set up.
 
