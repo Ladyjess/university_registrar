@@ -43,8 +43,8 @@ class Course
   end
 
   def update_student_ids(add_student_to_course)
-    @name = add_student_to_course.fetch(:name, @name)
-    @course_number = add_student_to_course[:course_number]
+    @name = add_student_to_course.fetch(:name, @name)  #second argument is for default value incase nothing is passed in. It wont raise errors
+    @course_number = add_student_to_course.fetch(:course_number, @course_number)
     DB.exec("UPDATE courses SET name = '#{@name}', course_number = '#{@course_number}' WHERE id = #{self.id};")
     add_student_to_course.fetch(:student_ids, []).each do |student_id|
       DB.exec("INSERT INTO courses_students (course_id, student_id) VALUES (#{self.id}, #{student_id});")

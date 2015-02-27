@@ -76,7 +76,7 @@ require 'spec_helper'
       samantha.save
       casey = Student.new({:name => "Casey Aoki", :id => nil, :date_of_enrollment => "2014-04-15"})
       casey.save
-    course.update_student_ids({:student_ids => [samantha.id, casey.id]})
+      course.update_student_ids({:student_ids => [samantha.id, casey.id]})
       expect(course.students).to eq ([samantha, casey])
     end
   end
